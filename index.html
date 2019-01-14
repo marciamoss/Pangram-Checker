@@ -1,0 +1,126 @@
+<!doctype <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Pangram checker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <style>
+        .txtcol {
+            color:rgb(48, 80, 1);
+            font-weight: bold;
+            text-align: center;
+            font-size: 20px;
+        }
+        .sbox{
+            background: rgb(48, 80, 1);
+            border-color: rgb(48, 80, 1);
+            font-size: 20px;
+            font-weight: bold;
+
+        }
+        body{
+            background-image: url("images/bg.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .bord{
+            border-style: solid;
+            border-width: 2px;
+            border-color: rgb(48, 80, 1);
+            font-size: 20px;
+            font-weight: bold;
+        }
+        p{
+            color: rgb(48, 80, 1);
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Pangram Checker</h1>
+            </div>
+            <div class="col-md-6">
+                <p class="txtcol">Enter the sentence to be checked</p>
+                <input type="text" class="form-control bord " id="validationDefault01" placeholder="" value="" required>
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-md-3">
+                    <button class="btn btn-primary ml-5 mt-3 sbox" id="checkPangram" type="enter">Enter</button>
+                    <p id="displayCheck" class="txtcol"></p>
+                </div>
+                <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 txtcol">
+                    <button class="btn btn-primary mt-3 ml-5 sbox" id="clear" type="again">Clear</button>
+                </div>
+        </div>
+        <div class="row">
+                <div class="col-md-6">
+                    <p>Disclaimer: The check function Works once per sentence. To check again hit clear and enter the sentence. 
+                        Does not work if the sentence is copied and pasted</p>
+                </div>
+        </div>
+        
+    </div>
+
+    <script>
+
+        $(document).ready(function(){
+            function checkPangram(letterNum){
+                //remove dup
+                letterNum.sort();
+                uniqueletter = letterNum.filter(function(item, pos) {
+                    return letterNum.indexOf(item) == pos;
+                });
+                for(var i=1;i<alpha.length;i++){
+                    if (alpha[i]===uniqueletter[i]){
+                        pangram="Yes, The sentence entered is a Pangram";
+                    }else{
+                        pangram="No, The sentence entered is not a Pangram";
+                    }
+                }
+            }
+            var letterNum=[], alpha=[], pangram;
+            for (var i=65;i<=90;i++){
+                    alpha.push(i);
+            }
+            document.onkeyup = function(evt) {
+                evt = evt || window.event;
+                var charCode = evt.which || evt.keyCode;
+                var charStr = String.fromCharCode(charCode);
+                if (/[a-z]/i.test(charStr)) {
+                    if(65<=evt.keyCode<=90){
+                        letterNum.push(evt.keyCode);
+                    }
+                }
+                //back space handling
+                if(evt.keyCode===8){
+                    letterNum.pop();
+                }
+                //accept enter as submit
+                if(evt.keyCode===13){
+                    checkPangram(letterNum);
+                    $("#displayCheck").html(pangram);
+                }
+                
+            };
+
+            $(("#checkPangram")).on("click", function() {   
+                checkPangram(letterNum);
+                $("#displayCheck").html(pangram);
+            });
+            $(("#clear")).on("click", function() {   
+                    location.reload();
+            });
+        });
+
+
+    </script>
+</body>
+</html>
