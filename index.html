@@ -48,7 +48,7 @@
             </div>
             <div class="col-md-6">
                 <p class="txtcol">Enter the sentence to be checked</p>
-                <input type="text" class="form-control bord " id="validationDefault01" placeholder="" value="" required>
+                <input type="text" class="form-control bord " id="sentence" placeholder="" value="" required>
             </div>
         </div>
         <div class="row">
@@ -62,8 +62,7 @@
         </div>
         <div class="row">
                 <div class="col-md-6">
-                    <p>Disclaimer: The check function Works once per sentence. To check again hit clear and enter the sentence. 
-                        Does not work if the sentence is copied and pasted</p>
+                    <p>Disclaimer: The check function Works once per sentence. To check again hit clear and enter the sentence.</p>
                 </div>
         </div>
         
@@ -72,47 +71,47 @@
     <script>
 
         $(document).ready(function(){
-            function checkPangram(letterNum){
-                //remove dup
-                letterNum.sort();
-                uniqueletter = letterNum.filter(function(item, pos) {
-                    return letterNum.indexOf(item) == pos;
+            var letterNum=[],sentenceLetter=[], alpha=[], pangram, sentenceEntered;
+            for (var i=97;i<=122;i++){
+                    alpha.push(i);
+            }
+            
+            function checkPangram(sentenceEntered){
+                sentenceLetter=(sentenceEntered.toLowerCase()).split("");
+                
+                //remove duplicates alphabets
+                sentenceLetter.sort(function(a, b){return a-b});
+                
+                uniqueletter = sentenceLetter.filter(function(item, pos) {
+                    return sentenceLetter.indexOf(item) == pos;
                 });
-                for(var i=1;i<alpha.length;i++){
-                    if (alpha[i]===uniqueletter[i]){
+                
+                //create ascii array for only alphabets in the sentence
+                for (var i=0;i<uniqueletter.length;i++){
+                    var test=parseInt(uniqueletter[i].charCodeAt(0));
+                    uniqueletter[i]=uniqueletter[i].charCodeAt(0);   
+                    if(97<=test&&test<=122){
+                        letterNum.push(uniqueletter[i]);
+                    }
+                }
+                letterNum.sort(function(a, b){return a-b});
+
+                //check the alphabets in the sentence is all 26 of em
+                for(var i=0 ;i<alpha.length;i++){
+                    if (alpha[i]===letterNum[i]){
                         pangram="Yes, The sentence entered is a Pangram";
                     }else{
                         pangram="No, The sentence entered is not a Pangram";
                     }
                 }
             }
-            var letterNum=[], alpha=[], pangram;
-            for (var i=65;i<=90;i++){
-                    alpha.push(i);
-            }
-            document.onkeyup = function(evt) {
-                evt = evt || window.event;
-                var charCode = evt.which || evt.keyCode;
-                var charStr = String.fromCharCode(charCode);
-                if (/[a-z]/i.test(charStr)) {
-                    if(65<=evt.keyCode<=90){
-                        letterNum.push(evt.keyCode);
-                    }
-                }
-                //back space handling
-                if(evt.keyCode===8){
-                    letterNum.pop();
-                }
-                //accept enter as submit
-                if(evt.keyCode===13){
-                    checkPangram(letterNum);
-                    $("#displayCheck").html(pangram);
-                }
-                
-            };
 
+            $("#sentence").keyup(function(){
+                sentenceEntered=$(this).val();
+                
+            });
             $(("#checkPangram")).on("click", function() {   
-                checkPangram(letterNum);
+                checkPangram(sentenceEntered);
                 $("#displayCheck").html(pangram);
             });
             $(("#clear")).on("click", function() {   
